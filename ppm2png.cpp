@@ -10,14 +10,20 @@ http://paulbourke.net/dataformats/ppm/
 #include <fstream>
 #include <vector>
 
-int main(){
+int main(int argc, char *argv[]){
 
-    const char* fname = "image.ppm";
-    const char* foutname = "image.png";
+    if (argc < 3){
+        std :: cout << "Too few arguments.\n";
+        std :: cout << "USEAGE : ppm2png <input file> <output file>\n";
+        return -1;
+    }
+
+    const char* fname = argv[1];
+    const char* foutname = argv[2];//"image.png";
 
     std::ifstream f(fname, std::ios::in | std::ios::binary | std::ios::ate);
 
-    // read the contents on the PPM file into memory
+    // read the contents of the PPM file into memory
     char* imagebuffer = nullptr;
     std::streampos size;
 
@@ -89,8 +95,8 @@ HEADER -> P3\n1920 1080\n255\n<DATA>
 We need to figure out how many bytes the WIDTH (in this case 1920 takes 4 bytes) ascii char takes.
 We also need to figure out how many bytes the HEIGHT (in this case 1080 takes 4 bytes) ascii char takes.
 
-The WIDTH byte (WID_BYT_LEN) will start from 3 and end at ascii " " <- space char
-The HEIGHT (HEI_BYT_LEN) byte will start from 3 + WID_BYT_LEN + 1 and end at \n char
+The WIDTH byte length (WID_BYT_LEN) will start from 3 and end at ascii " " <- space char
+The HEIGHT byte length (HEI_BYT_LEN) will start from 3 + WID_BYT_LEN + 1 and end at \n char
 
 The data will start from DAT_BYT_STRT = 3 + WID_BYT_LEN + 1 + HEI_BYT_LEN + 1 + '3' + 1 (in this case 17) bytes
 so we need to forward the image data array by DAT_BYT_STRT - 1 bytes.
